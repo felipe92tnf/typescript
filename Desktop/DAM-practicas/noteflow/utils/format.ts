@@ -5,6 +5,14 @@ export function formatNoteDate(iso: string): string {
   });
 }
 
+export function formatCreatedDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
 export function truncate(text: string, maxLength: number): string {
   const trimmed = text.trim();
   if (trimmed.length <= maxLength) {

@@ -28,7 +28,10 @@ export interface NotesStoreActions {
   addChecklist: (checklist: ChecklistNote) => void;
   addIdea: (idea: IdeaNote) => void;
   updateNote: (id: string, input: UpdateAnyNoteInput) => void;
+  toggleChecklistItem: (checklistId: string, itemId: string) => void;
+  deleteChecklist: (id: string) => void;
   deleteNote: (id: string) => void;
+  deleteIdea: (id: string) => void;
   resetNotes: () => void;
   setHasHydrated: (value: boolean) => void;
 }
@@ -239,10 +242,38 @@ export const useNotesStore = create<NotesStore>()(
         }));
       },
 
+      toggleChecklistItem: (checklistId, itemId) => {
+        set((state) => ({
+          checklists: state.checklists.map((checklist) =>
+            checklist.id === checklistId
+              ? {
+                  ...checklist,
+                  updatedAt: createTimestamp(),
+                  items: checklist.items.map((item) =>
+                    item.id === itemId
+                      ? { ...item, completed: !item.completed }
+                      : item,
+                  ),
+                }
+              : checklist,
+          ),
+        }));
+      },
+
+      deleteChecklist: (id) => {
+        set((state) => ({
+          checklists: state.checklists.filter((checklist) => checklist.id !== id),
+        }));
+      },
+
       deleteNote: (id) => {
         set((state) => ({
           notes: state.notes.filter((note) => note.id !== id),
-          checklists: state.checklists.filter((checklist) => checklist.id !== id),
+        }));
+      },
+
+      deleteIdea: (id) => {
+        set((state) => ({
           ideas: state.ideas.filter((idea) => idea.id !== id),
         }));
       },
